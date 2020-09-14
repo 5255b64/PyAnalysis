@@ -10,16 +10,16 @@ class FeatureData:
     """
 
     def __init__(self):
-        self.totalProbeNum = -1
-        self.testSuite = dict()
+        self.totalProbeNum = -1  # 桩总数
+        self.testSuite = dict()  # 测试用例对象字典
 
     def load(self, feature_data_file_path: str):
         """
         构造函数 根据提供的json文件路径 加载对象
         :param feature_data_file_path: 输入json文件路径（特征数据）
         """
-        self.totalProbeNum = -1  # 桩总数
-        self.testSuite = dict()  # 测试用例对象字典
+        # self.totalProbeNum = -1
+        # self.testSuite = dict()
         with open(feature_data_file_path, "r") as json_f:
             json_obj: list = json.load(json_f)
             for testcase_dict in json_obj:
@@ -45,9 +45,9 @@ class FeatureData:
                 print("测试用例编号不存在：" + str(selected_num), file=sys.stderr)
         return result
 
-    def get_feature_matrix(self):
+    def get_blackbox_feature_matrix(self):
         """
-        获取矩阵（二维数组）式的特征
+        获取矩阵（二维数组）式的黑盒特征
         :return:
         feature_lists   特征矩阵
         key_list        矩阵中每一行对应的测试用例编号
@@ -57,6 +57,33 @@ class FeatureData:
         for testcase_key in self.testSuite:
             key_list.append(testcase_key)
             feature_lists.append(self.testSuite[testcase_key].feature)
+        return feature_lists, key_list
+
+    def get_whitebox_feature_matrix(self):
+        feature_lists = list()
+        key_list = list()
+        attribute_num = self.totalProbeNum  # 特征向量的长度（等于插入桩的总数）
+        probe_map = dict()  # 桩标识（字符串）-桩编号 的映射关系
+        probe_counter = 0
+        for testcase_key in self.testSuite:
+            key_list.append(testcase_key)
+            testcaseObject = self.testSuite[testcase_key]
+            # 根据触发桩的数据 构建白盒特征向量
+            feature_list = list()
+            # 简化代码
+            feature_list=[0]*attribute_num
+            # for i in range(attribute_num):
+            #     feature_list.append(0)
+            probes = testcaseObject.probeInfos  # 该条测试用例触发桩的信息（dict类型）
+            for str_probe_info in probes:
+                # 标记出现过的桩
+                if str_probe_info not in probe_map.keys():
+                    probe_map[str_probe_info] = probe_counter
+                    probe_counter = probe_counter + 1
+                feature_list[probe_map[str_probe_info]] = 1     # 出现过的桩 特征位置1
+
+            # feature_lists.append(self.testSuite[testcase_key].feature)
+            feature_lists.append(feature_list)
         return feature_lists, key_list
 
     def print(self):
@@ -88,7 +115,9 @@ if __name__ == "__main__":
     """
     测试
     """
-    feature_data_file_path = "..\\resource\\cstp_feature.json"
+    # feature_data_file_path = "..\\resource\\cstp_feature.json"
+    feature_data_file_path = "..\\resource\\feature_FxclDealLogParser_1000.json"
+
     print(feature_data_file_path)
     fd = FeatureData()
     fd.load(feature_data_file_path=feature_data_file_path)
@@ -96,6 +125,7 @@ if __name__ == "__main__":
 
     fd2 = fd.select([1, 2, 3])
     fd2.print()
-    feature_lists, key_list = fd2.get_feature_matrix()
+    # feature_lists, key_list = fd2.get_blackbox_feature_matrix()
+    feature_lists, key_list = fd2.get_whitebox_feature_matrix()
     print(feature_lists)
     print(key_list)

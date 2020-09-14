@@ -4,7 +4,7 @@ from src.cluster import cluster_hierarchical
 
 if __name__ == "__main__":
     # 加载特征数据
-    feature_data_file_path = "..\\..\\resource\\cstp_feature.json"
+    feature_data_file_path = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
     fd = FeatureData()
     fd.load(feature_data_file_path=feature_data_file_path)
 
@@ -17,9 +17,10 @@ if __name__ == "__main__":
     ic1.plot_case_cover_probe_num_list()
 
     # for i in list(range(960, 10, -50)):
-    for i in [500, 250, 100, 50, 10, 5, 3, 2]:
+    # for i in [500, 250, 100, 50, 10]:
+    for i in [500, 250, 100, 50, 10, 8, 6, 4, 2]:
         # 聚类削减
-        feature_lists, key_list = fd.get_feature_matrix()
+        feature_lists, key_list = fd.get_blackbox_feature_matrix()
         result = cluster_hierarchical.run(feature_lists, i)
         # print(result)
 
