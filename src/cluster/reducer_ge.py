@@ -23,12 +23,12 @@ def run(attributes: list, cluster_num: int, X_selected: list = [], coverage_list
     counter = 0
     # 筛选测试用例 挑选的数量为cluster_num
     for num in range(cluster_num):
+        if num < len(X_selected):
+            continue
         # 对剩余测试用例做遍历
         tc_coverage_max = -1
         tc_selected = -1
         for tc_num in range(len(attributes)):
-            if tc_num < len(X_selected):
-                continue
             if tc_num not in X_selected:
                 # 计算覆盖率
                 tc_coverage = 0
@@ -57,10 +57,25 @@ if __name__ == "__main__":
         [0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0],
         [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 1],
     ]
     X_selected = []
     coverage_list = [0] * len(X[0])
-    for i in range(3):
+    for i in range(20):
         [X_selected, coverage_list] = run(attributes=X, cluster_num=i, X_selected=X_selected,
                                           coverage_list=coverage_list)
 
