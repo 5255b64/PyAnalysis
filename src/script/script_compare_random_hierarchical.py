@@ -33,8 +33,8 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 
     fd = FeatureData()
     fd.load(feature_data_file_path=input_file_addr)
-    # feature_lists, key_list = fd.get_blackbox_feature_matrix()    # 黑盒特征
-    feature_lists, key_list = fd.get_blackbox_feature_matrix()  # 白盒特征
+    feature_lists, key_list = fd.get_blackbox_feature_matrix()  # 黑盒特征
+    # feature_lists, key_list = fd.get_blackbox_feature_matrix()  # 白盒特征
     ic = IndicatorCollector(fd)  # 统计数据
     pca_n_components = ic.total_probe_num
 
@@ -45,11 +45,16 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     # cluster_function = cluster_hierarchical_pca
     # cluster_function = cluster_hierarchical_ver2
 
+    reduced_testsuite = []
+    coverage_list = [0] * len(feature_lists[0])
+
     for cluster_num in cluster_sample_list:
         print("cluster_num=" + str(cluster_num))
         # 凝聚层次聚类削减方法
         # reduced_testsuite = cluster_function.run(feature_lists, cluster_num, pca_n_components=pca_n_components)
-        reduced_testsuite = cluster_function.run(feature_lists, cluster_num)
+        [reduced_testsuite, coverage_list] = cluster_function.run(feature_lists, cluster_num,
+                                                                  X_selected=reduced_testsuite,
+                                                                  coverage_list=coverage_list)
         # 构建削减后的测试集
         selected_tc_list = list()
         for selected_tc_num in reduced_testsuite:
@@ -123,13 +128,24 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 
 
 if __name__ == "__main__":
-    feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
-    output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
+    # f_measure_beta = 2
+    #     # feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
+    #     # output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
+    #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+    #     #     f_measure_beta=f_measure_beta, is_draw_plot=True)
+    #     #
+    #     # feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
+    #     # output_file_addr = "..\\..\\resource\\FxDealLogParser_1000.csv"
+    #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+    #     #     f_measure_beta=f_measure_beta, is_draw_plot=True)
+
     f_measure_beta = 2
+    feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
+    output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
     run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
         f_measure_beta=f_measure_beta, is_draw_plot=True)
 
     feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
-    output_file_addr = "..\\..\\resource\\FxDealLogParser_1000.csv"
+    output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
     run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
         f_measure_beta=f_measure_beta, is_draw_plot=True)

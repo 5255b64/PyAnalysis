@@ -8,29 +8,32 @@ ge算法是一种贪心算法，具体如下：
 """
 
 
-def run(attributes: list, cluster_num: int):
+def run(attributes: list, cluster_num: int, X_selected: list = [], coverage_list: list = []):
     """
     使用GE算法 根据数量要求进行测试用例削减
     :param attributes:  测试用例特征
     :param cluster_num: 数量要求
+    :param X_selected 默认的返回值 存储之前已经计算好的结果
+    :param coverage_list 覆盖率情况 存储之前已经计算好的结果
     :return: list 返回筛选后剩下的测试用例的编号（返回值数量与cluster_num相同）
     """
-    # 返回值 挑选的测试用例list
-    X_selected = list()
     # 特征向量长度
     attribute_length = len(attributes[0])
-    # 已挑选测试用例的覆盖情况
-    coverage_list = [0] * attribute_length
+
+    counter = 0
     # 筛选测试用例 挑选的数量为cluster_num
     for num in range(cluster_num):
         # 对剩余测试用例做遍历
         tc_coverage_max = -1
         tc_selected = -1
         for tc_num in range(len(attributes)):
+            if tc_num < len(X_selected):
+                continue
             if tc_num not in X_selected:
                 # 计算覆盖率
                 tc_coverage = 0
                 for attr_num in range(attribute_length):
+                    counter = counter + 1
                     attr_value = attributes[tc_num][attr_num]
                     if coverage_list[attr_num] is 0 and attr_value > 0:
                         tc_coverage = tc_coverage + 1
@@ -43,8 +46,8 @@ def run(attributes: list, cluster_num: int):
         for attr_num in range(attribute_length):
             if attributes[tc_selected][attr_num] > 0:
                 coverage_list[attr_num] = 1
-
-    return X_selected
+    # print("counter=" + str(counter))
+    return [X_selected, coverage_list]
 
 
 if __name__ == "__main__":
@@ -55,7 +58,13 @@ if __name__ == "__main__":
         [0, 0, 1, 1, 0],
         [0, 0, 0, 0, 1],
     ]
-    result = run(attributes=X, cluster_num=3)
-    print(result)
+    X_selected = []
+    coverage_list = [0] * len(X[0])
+    for i in range(3):
+        [X_selected, coverage_list] = run(attributes=X, cluster_num=i, X_selected=X_selected,
+                                          coverage_list=coverage_list)
+
+    print(X_selected)
+    print(coverage_list)
     print("##############")
     print("### Ending ###")
