@@ -56,11 +56,12 @@ def run(attributes: list, cluster_num: int, X_selected: list = [], coverage_list
         for attr_num in range(attribute_length):
             if tc_selected[attr_num] > 0:
                 coverage_list[attr_num] = 1
-                for tc_num in range(attribute_length):
+                for tc_num in range(len(attributes)):
+                    counter = counter + 1
                     if tc_num not in X_selected and attributes[tc_num][attr_num] is 1:
                         tc_coverage_list[tc_num] = tc_coverage_list[tc_num] - 1
     # print("counter=" + str(counter))
-    return [X_selected, coverage_list]
+    return [X_selected, coverage_list, tc_coverage_list]
 
 
 if __name__ == "__main__":
@@ -87,10 +88,11 @@ if __name__ == "__main__":
         [0, 0, 0, 0, 1],
     ]
     X_selected = []
+    tc_coverage_list = []
     coverage_list = [0] * len(X[0])
     for i in range(5):
-        [X_selected, coverage_list] = run(attributes=X, cluster_num=i, X_selected=X_selected,
-                                          coverage_list=coverage_list)
+        [X_selected, coverage_list, tc_coverage_list] = run(attributes=X, cluster_num=i, X_selected=X_selected,
+                                          coverage_list=coverage_list, tc_coverage_list=tc_coverage_list)
 
         print(X_selected)
     print(coverage_list)

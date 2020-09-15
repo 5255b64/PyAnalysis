@@ -45,21 +45,23 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     # cluster_function = cluster_hierarchical_pca
     # cluster_function = cluster_hierarchical_ver2
 
-    reduced_testsuite = []
+    reduced_testsuite_exp = []
+    tc_coverage_list = []
     coverage_list = [0] * len(feature_lists[0])
 
     for cluster_num in cluster_sample_list:
         print("cluster_num=" + str(cluster_num))
         # 凝聚层次聚类削减方法
-        # reduced_testsuite = cluster_function.run(feature_lists, cluster_num, pca_n_components=pca_n_components)
-        [reduced_testsuite, coverage_list] = cluster_function.run(feature_lists, cluster_num,
-                                                                  X_selected=reduced_testsuite,
-                                                                  coverage_list=coverage_list)
-        print("reduced_testsuite:", end="")
-        print(reduced_testsuite)
+        # reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num, pca_n_components=pca_n_components)
+        [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(feature_lists, cluster_num,
+                                                                                    X_selected=reduced_testsuite_exp,
+                                                                                    coverage_list=coverage_list,
+                                                                                    tc_coverage_list=tc_coverage_list)
+        print("reduced_testsuite_exp:", end="")
+        print(reduced_testsuite_exp)
         # 构建削减后的测试集
         selected_tc_list = list()
-        for selected_tc_num in reduced_testsuite:
+        for selected_tc_num in reduced_testsuite_exp:
             selected_tc_list.append(key_list[selected_tc_num])
         fd2 = fd.select(selected_tc_list)
         ic2 = IndicatorCollector(fd2)  # 统计数据
@@ -76,10 +78,10 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         list_ptr = len(result_random_f_score) - 1
         for random_sample in range(random_times):
             # 凝聚层次聚类削减方法
-            reduced_testsuite = cluster_random.run(feature_lists, cluster_num)
+            reduced_testsuite_compare = cluster_random.run(feature_lists, cluster_num)
             # 构建削减后的测试集
             selected_tc_list = list()
-            for selected_tc_num in reduced_testsuite:
+            for selected_tc_num in reduced_testsuite_compare:
                 selected_tc_list.append(key_list[selected_tc_num])
             fd2 = fd.select(selected_tc_list)
             ic2 = IndicatorCollector(fd2)  # 统计数据
