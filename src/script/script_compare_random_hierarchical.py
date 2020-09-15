@@ -55,6 +55,8 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         [reduced_testsuite, coverage_list] = cluster_function.run(feature_lists, cluster_num,
                                                                   X_selected=reduced_testsuite,
                                                                   coverage_list=coverage_list)
+        print("reduced_testsuite:", end="")
+        print(reduced_testsuite)
         # 构建削减后的测试集
         selected_tc_list = list()
         for selected_tc_num in reduced_testsuite:
