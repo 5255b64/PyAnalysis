@@ -35,9 +35,20 @@ def run(input_csv_file_addr: str, output_csv_file_addr: str):
 
 
 if __name__ == "__main__":
-    input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
-    output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_reflection.csv"
+    # input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
+    # output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_reflection.csv"
     # input_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000.csv"
     # output_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_reflection.csv"
+    # run(input_csv_file_addr=input_csv_file_addr,
+    #     output_csv_file_addr=output_csv_file_addr)
+
+
+    input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
+    output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_reflection_all.csv"
+    run(input_csv_file_addr=input_csv_file_addr,
+        output_csv_file_addr=output_csv_file_addr)
+
+    input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
+    output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_reflection_all.csv"
     run(input_csv_file_addr=input_csv_file_addr,
         output_csv_file_addr=output_csv_file_addr)
