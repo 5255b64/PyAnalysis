@@ -70,17 +70,14 @@ class FeatureData:
             testcaseObject = self.testSuite[testcase_key]
             # 根据触发桩的数据 构建白盒特征向量
             feature_list = list()
-            # 简化代码
-            feature_list=[0]*attribute_num
-            # for i in range(attribute_num):
-            #     feature_list.append(0)
+            feature_list = [0] * attribute_num
             probes = testcaseObject.probeInfos  # 该条测试用例触发桩的信息（dict类型）
             for str_probe_info in probes:
                 # 标记出现过的桩
                 if str_probe_info not in probe_map.keys():
                     probe_map[str_probe_info] = probe_counter
                     probe_counter = probe_counter + 1
-                feature_list[probe_map[str_probe_info]] = 1     # 出现过的桩 特征位置1
+                feature_list[probe_map[str_probe_info]] = 1  # 出现过的桩 特征位置1
 
             # feature_lists.append(self.testSuite[testcase_key].feature)
             feature_lists.append(feature_list)

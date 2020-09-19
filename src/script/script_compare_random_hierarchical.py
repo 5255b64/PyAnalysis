@@ -50,15 +50,15 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     coverage_list = [0] * len(feature_lists[0])
 
     for cluster_num in cluster_sample_list:
-        print("cluster_num=" + str(cluster_num))
+        print("cluster_num=" + str(cluster_num) + "/" + str(len(cluster_sample_list)))
         # 凝聚层次聚类削减方法
         # reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num, pca_n_components=pca_n_components)
         [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(feature_lists, cluster_num,
-                                                                                    X_selected=reduced_testsuite_exp,
-                                                                                    coverage_list=coverage_list,
-                                                                                    tc_coverage_list=tc_coverage_list)
-        print("reduced_testsuite_exp:", end="")
-        print(reduced_testsuite_exp)
+                                                                                        X_selected=reduced_testsuite_exp,
+                                                                                        coverage_list=coverage_list,
+                                                                                        tc_coverage_list=tc_coverage_list)
+        # print("reduced_testsuite_exp:", end="")
+        # print(reduced_testsuite_exp)
         # 构建削减后的测试集
         selected_tc_list = list()
         for selected_tc_num in reduced_testsuite_exp:
@@ -66,7 +66,9 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         fd2 = fd.select(selected_tc_list)
         ic2 = IndicatorCollector(fd2)  # 统计数据
 
+        # 注意 此处的coverage_score是黑盒特征的覆盖率
         [f_score, redundancy_score, coverage_score] = ic2.cal_calculate_index(beta=f_measure_beta)
+
         result_hierarchical_f_score.append(f_score)
         result_hierarchical_redundancy_score.append(redundancy_score)
         result_hierarchical_coverage_score.append(coverage_score)
@@ -77,7 +79,7 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         result_random_coverage_score.append(0)
         list_ptr = len(result_random_f_score) - 1
         for random_sample in range(random_times):
-            # 凝聚层次聚类削减方法
+            # 随机采样削减方法
             reduced_testsuite_compare = cluster_random.run(feature_lists, cluster_num)
             # 构建削减后的测试集
             selected_tc_list = list()
@@ -132,7 +134,8 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 
 
 if __name__ == "__main__":
-    # f_measure_beta = 2
+    f_measure_beta = 2
+
     #     # feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
     #     # output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
     #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
@@ -143,13 +146,27 @@ if __name__ == "__main__":
     #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
     #     #     f_measure_beta=f_measure_beta, is_draw_plot=True)
 
-    f_measure_beta = 2
-    feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
-    output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
+    # feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
+    # output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
+    # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+    #     f_measure_beta=f_measure_beta, is_draw_plot=True)
+    #
+    # feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
+    # output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
+    # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+    #     f_measure_beta=f_measure_beta, is_draw_plot=True)
+
+    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_1000.json"
+    output_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
     run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
         f_measure_beta=f_measure_beta, is_draw_plot=True)
 
-    feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
-    output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
+    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_1000.json"
+    output_file_addr = "..\\..\\resource\\BcbipType2_1000_all.csv"
+    run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+        f_measure_beta=f_measure_beta, is_draw_plot=True)
+
+    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_1000.json"
+    output_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
     run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
         f_measure_beta=f_measure_beta, is_draw_plot=True)
