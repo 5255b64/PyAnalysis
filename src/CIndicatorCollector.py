@@ -21,12 +21,17 @@ class IndicatorCollector:
         redundancy_score = 0  # 冗余度得分 取值范围[0,1] 冗余程度越高 得分越低
         coverage_score = 0  # 覆盖率得分 取值范围[0,1] 覆盖率越高 得分越高
         for sample in self.case_cover_probe_num_list:
+            # 仅被y条测试用例覆盖的桩 正好有x条
             x = sample[0]
             y = sample[1]
             redundancy_score = redundancy_score + y / x  # 计算冗余程度
-            coverage_score = coverage_score + y  # 计算覆盖的桩的数量
+            coverage_score = coverage_score + y
+
         redundancy_score = redundancy_score / coverage_score  # 计算冗余程度
-        coverage_score = coverage_score / self.total_probe_num  # 计算覆盖率
+        # coverage_score = coverage_score / self.total_probe_num  # 计算覆盖率
+
+        # 重新计算覆盖率
+        coverage_score = self.feature_data.get_whitebox_feature_coverage()
 
         f_score = (beta * beta + 1) * redundancy_score * coverage_score / (
                 beta * beta * redundancy_score + coverage_score)

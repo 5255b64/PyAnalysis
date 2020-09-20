@@ -35,15 +35,16 @@ def run(input_csv_file_addr: str, output_csv_file_addr: str):
 
 
 if __name__ == "__main__":
-    # input_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
-    # output_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all_reflection.csv"
-    # run(input_csv_file_addr=input_csv_file_addr,
-    #     output_csv_file_addr=output_csv_file_addr)
-    #
-    # input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
-    # output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all_reflection.csv"
-    # run(input_csv_file_addr=input_csv_file_addr,
-    #     output_csv_file_addr=output_csv_file_addr)
+    input_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
+    output_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all_reflection.csv"
+    run(input_csv_file_addr=input_csv_file_addr,
+        output_csv_file_addr=output_csv_file_addr)
+
+    input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
+    output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all_reflection.csv"
+    run(input_csv_file_addr=input_csv_file_addr,
+        output_csv_file_addr=output_csv_file_addr)
+
     input_csv_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
     output_csv_file_addr = "..\\..\\resource\\BcbipType1_1000_all_reflection.csv"
     run(input_csv_file_addr=input_csv_file_addr,
@@ -56,5 +57,10 @@ if __name__ == "__main__":
 
     input_csv_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
     output_csv_file_addr = "..\\..\\resource\\BcbipType3_1000_all_reflection.csv"
+    run(input_csv_file_addr=input_csv_file_addr,
+        output_csv_file_addr=output_csv_file_addr)
+
+    input_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all.csv"
+    output_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all_reflection.csv"
     run(input_csv_file_addr=input_csv_file_addr,
         output_csv_file_addr=output_csv_file_addr)

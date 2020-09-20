@@ -3,17 +3,19 @@
 “随机采样”削减方法的比较
 """
 import csv
+import sys
 
 from src.CFeatureData import FeatureData
 from src.CIndicatorCollector import IndicatorCollector
-from src.CONFIG import CLUSTER_NUM_SAMPLE_LIST, RANDOM_TIMES, F_MEASURE_BETA
+from src.CONFIG import CLUSTER_NUM_SAMPLE_LIST_1000, RANDOM_TIMES, F_MEASURE_BETA, CLUSTER_NUM_SAMPLE_LIST_3000
 from src.cluster import cluster_hierarchical, cluster_random, cluster_hierarchical_ver2, cluster_hierarchical_pca, \
     reducer_ge
 import matplotlib.pyplot as plt
 
 
-def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list = CLUSTER_NUM_SAMPLE_LIST,
-        random_times: int = RANDOM_TIMES, f_measure_beta: float = F_MEASURE_BETA, is_draw_plot: bool = False):
+def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list = CLUSTER_NUM_SAMPLE_LIST_1000,
+        random_times: int = RANDOM_TIMES, f_measure_beta: float = F_MEASURE_BETA, is_draw_plot: bool = False,
+        log_label: str = ""):
     """
 
     :param input_file_addr:     输出的特征文件
@@ -39,9 +41,9 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     pca_n_components = ic.total_probe_num
 
     # 采用何种聚类削减方法
-    cluster_function = reducer_ge
+    # cluster_function = reducer_ge
     # cluster_function = cluster_random
-    # cluster_function = cluster_hierarchical
+    cluster_function = cluster_hierarchical
     # cluster_function = cluster_hierarchical_pca
     # cluster_function = cluster_hierarchical_ver2
 
@@ -50,13 +52,11 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     coverage_list = [0] * len(feature_lists[0])
 
     for cluster_num in cluster_sample_list:
-        print("cluster_num=" + str(cluster_num) + "/" + str(len(cluster_sample_list)))
+        print(log_label + ": " + str(cluster_num) + "/" + str(len(cluster_sample_list)))
         # 凝聚层次聚类削减方法
-        # reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num, pca_n_components=pca_n_components)
-        [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(feature_lists, cluster_num,
-                                                                                        X_selected=reduced_testsuite_exp,
-                                                                                        coverage_list=coverage_list,
-                                                                                        tc_coverage_list=tc_coverage_list)
+        # 注意 此处的coverage_list是黑盒特征的覆盖率情况
+        reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num)
+        # [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(feature_lists, cluster_num,X_selected=reduced_testsuite_exp,coverage_list=coverage_list,tc_coverage_list=tc_coverage_list)
         # print("reduced_testsuite_exp:", end="")
         # print(reduced_testsuite_exp)
         # 构建削减后的测试集
@@ -66,7 +66,7 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         fd2 = fd.select(selected_tc_list)
         ic2 = IndicatorCollector(fd2)  # 统计数据
 
-        # 注意 此处的coverage_score是黑盒特征的覆盖率
+        # 计算三个指标
         [f_score, redundancy_score, coverage_score] = ic2.cal_calculate_index(beta=f_measure_beta)
 
         result_hierarchical_f_score.append(f_score)
@@ -136,37 +136,43 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 if __name__ == "__main__":
     f_measure_beta = 2
 
-    #     # feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
-    #     # output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000.csv"
-    #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-    #     #     f_measure_beta=f_measure_beta, is_draw_plot=True)
-    #     #
-    #     # feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
-    #     # output_file_addr = "..\\..\\resource\\FxDealLogParser_1000.csv"
-    #     # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-    #     #     f_measure_beta=f_measure_beta, is_draw_plot=True)
-
-    # feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
-    # output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
-    # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-    #     f_measure_beta=f_measure_beta, is_draw_plot=True)
-    #
-    # feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
-    # output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
-    # run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-    #     f_measure_beta=f_measure_beta, is_draw_plot=True)
-
-    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_1000.json"
-    output_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
-    run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-        f_measure_beta=f_measure_beta, is_draw_plot=True)
-
-    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_1000.json"
-    output_file_addr = "..\\..\\resource\\BcbipType2_1000_all.csv"
-    run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-        f_measure_beta=f_measure_beta, is_draw_plot=True)
-
-    feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_1000.json"
-    output_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
-    run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-        f_measure_beta=f_measure_beta, is_draw_plot=True)
+    arg = int(sys.argv[1])
+    if arg is 1:
+        # CSTP实验部分
+        feature_data_file_addr = "..\\..\\resource\\feature_FxclDealLogParser_1000.json"
+        output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="FxclDealLog")
+    elif arg is 2:
+        feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
+        output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="FxDealLog")
+    elif arg is 3:
+        # Bcbip实验部分 123分开
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type1")
+    elif arg is 4:
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType2_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type2")
+    elif arg is 5:
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type3")
+    elif arg is 6:
+        # Bcbip实验部分 123分开
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type_all_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType_all_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_3000,
+            log_label="Bcbip_type_all")

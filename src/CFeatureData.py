@@ -73,6 +73,7 @@ class FeatureData:
             feature_list = [0] * attribute_num
             probes = testcaseObject.probeInfos  # 该条测试用例触发桩的信息（dict类型）
             for str_probe_info in probes:
+                # TODO 修改str_probe_info
                 # 标记出现过的桩
                 if str_probe_info not in probe_map.keys():
                     probe_map[str_probe_info] = probe_counter
@@ -87,6 +88,21 @@ class FeatureData:
         print("totalProbeNum=" + str(self.totalProbeNum))
         print("testSuite=" + str(self.testSuite))
 
+    def get_whitebox_feature_coverage(self):
+        """
+        计算白盒特征（代码）的覆盖率
+        :return:
+        """
+        result = 0
+        case_list, key_list = self.get_whitebox_feature_matrix()
+        attribute_length = len(case_list[0])
+        for attribute_num in range(attribute_length):
+            for case in case_list:
+                if case[attribute_num] > 0:
+                    result = result + 1
+                    break
+        return result / attribute_length
+
 
 class TestcaseData:
     """
@@ -99,13 +115,28 @@ class TestcaseData:
         # feature 数组 组合覆盖特征 0-1值
         self.feature = testcase["feature"]
         # probeInfos 字典 key为桩标识 value为该桩被触发的次数
-        self.probeInfos = testcase["probeInfos"]
+        self.probeInfos = self.parseProbeInfos(testcase["probeInfos"])
         # probeNum 整数 触发的桩数量（有重复）
         self.probeNum = testcase["probeNum"]
         # testcaseCode 字符串 测试用例的字段以及值
         self.testcaseCode = testcase["testcaseCode"]
         # testcaseID 整数 测试用例的ID
         self.testcaseID = testcase["testcaseID"]
+
+    def parseProbeInfos(self, probeInfos: dict):
+        result = dict()
+
+        for probe_info_key in probeInfos:
+            splits = probe_info_key.split(" ")
+            # 删除splits[5] （线程号） 返回
+            if len(splits)<6:
+                result[probe_info_key] = probeInfos[probe_info_key]
+            else:
+                info = splits[0]+" "+splits[1]+" "+splits[2]+" "+splits[3]+" "+splits[5]
+                # print(splits)
+                result[info] = probeInfos[probe_info_key]
+
+        return result
 
 
 if __name__ == "__main__":
