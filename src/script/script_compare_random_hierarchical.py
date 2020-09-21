@@ -176,3 +176,22 @@ if __name__ == "__main__":
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_3000,
             log_label="Bcbip_type_all")
+    elif arg is 7:
+        # Bcbip 人工测试用例 1
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannaul.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannaul.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,10)),
+            log_label="Bcbip_type_all")
+        # Bcbip 人工测试用例 2
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannaul.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannaul.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,22)),
+            log_label="Bcbip_type_all")
+        # Bcbip 人工测试用例 3
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannaul.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannaul.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,17)),
+            log_label="Bcbip_type_all")

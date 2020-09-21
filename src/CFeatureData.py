@@ -115,7 +115,7 @@ class TestcaseData:
         # feature 数组 组合覆盖特征 0-1值
         self.feature = testcase["feature"]
         # probeInfos 字典 key为桩标识 value为该桩被触发的次数
-        self.probeInfos = self.parseProbeInfos(testcase["probeInfos"])
+        self.probeInfos = self.parseProbeInfos(testcase["probeInfos"])  # 去除线程号
         # probeNum 整数 触发的桩数量（有重复）
         self.probeNum = testcase["probeNum"]
         # testcaseCode 字符串 测试用例的字段以及值
@@ -129,10 +129,10 @@ class TestcaseData:
         for probe_info_key in probeInfos:
             splits = probe_info_key.split(" ")
             # 删除splits[5] （线程号） 返回
-            if len(splits)<6:
+            if len(splits) < 6:
                 result[probe_info_key] = probeInfos[probe_info_key]
             else:
-                info = splits[0]+" "+splits[1]+" "+splits[2]+" "+splits[3]+" "+splits[5]
+                info = splits[0] + " " + splits[1] + " " + splits[2] + " " + splits[3] + " " + splits[5]
                 # print(splits)
                 result[info] = probeInfos[probe_info_key]
 
