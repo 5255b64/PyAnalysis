@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import json
+import os
 import sys
 import xlrd
 
@@ -177,11 +178,13 @@ def fun(input_excel_file_addr: str, input_excel_sheet_name: str, output_json_pat
     # 输出json文件
     counter = 0
     for key in obj.keys():
+        if not os.path.exists(output_json_path):
+            os.makedirs(output_json_path)
         output_obj = obj[key]
         output_json_file_path = output_json_path + "\\test" + str(counter) + ".json"
         counter = counter + 1
-        with open(output_json_file_path, 'w') as out_f:
-            json.dump(output_obj, out_f, ensure_ascii=True)
+        with open(output_json_file_path, 'w', encoding='utf-8') as out_f:
+            json.dump(output_obj, out_f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
@@ -189,18 +192,22 @@ if __name__ == "__main__":
     COL_START = 7  # 从第8列开始读取数据
 
     # 比例
-    # ROW_END = 40  # 读取到39行为止
-    # COL_END = 57  # 读取到57列为止
-    # input_excel_file_addr = "C:\\GX\\Study\\ECNU\\小论文\\数据\\中资外币债\\准出材料\\数据用例\\中资外币债_比例.xlsx"
-    # input_excel_sheet_name = '中资外币债_比例'
-    # output_json_path = "C:\\GX\\Study\\ECNU\\小论文\\程序\\PyAnalysis\\resource\\人工测试用例\\比例"
+    ROW_END = 40  # 读取到39行为止
+    COL_END = 57  # 读取到57列为止
+    input_excel_file_addr = "C:\\GX\\Study\\ECNU\\小论文\\数据\\中资外币债\\准出材料\\数据用例\\中资外币债_比例.xlsx"
+    input_excel_sheet_name = '中资外币债_比例'
+    output_json_path = "C:\\GX\\Study\\ECNU\\小论文\\程序\\PyAnalysis\\resource\\人工测试用例\\比例"
+    fun(input_excel_file_addr=input_excel_file_addr, input_excel_sheet_name=input_excel_sheet_name,
+        output_json_path=output_json_path, ROW_START=ROW_START, ROW_END=ROW_END, COL_START=COL_START, COL_END=COL_END)
 
     # 地区
-    # ROW_END = 35  # 读取到35行为止
-    # COL_END = 92  # 读取到92列为止
-    # input_excel_file_addr = "C:\\GX\\Study\\ECNU\\小论文\\数据\\中资外币债\\准出材料\\数据用例\\中资外币债_地区.xlsx"
-    # input_excel_sheet_name = '中资外币债_地区'
-    # output_json_path = "C:\\GX\\Study\\ECNU\\小论文\\程序\\PyAnalysis\\resource\\人工测试用例\\地区"
+    ROW_END = 35  # 读取到35行为止
+    COL_END = 92  # 读取到92列为止
+    input_excel_file_addr = "C:\\GX\\Study\\ECNU\\小论文\\数据\\中资外币债\\准出材料\\数据用例\\中资外币债_地区.xlsx"
+    input_excel_sheet_name = '中资外币债_地区'
+    output_json_path = "C:\\GX\\Study\\ECNU\\小论文\\程序\\PyAnalysis\\resource\\人工测试用例\\地区"
+    fun(input_excel_file_addr=input_excel_file_addr, input_excel_sheet_name=input_excel_sheet_name,
+        output_json_path=output_json_path, ROW_START=ROW_START, ROW_END=ROW_END, COL_START=COL_START, COL_END=COL_END)
 
     # 类型
     ROW_END = 40  # 读取到40行为止

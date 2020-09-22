@@ -20,7 +20,7 @@ class FeatureData:
         """
         # self.totalProbeNum = -1
         # self.testSuite = dict()
-        with open(feature_data_file_path, "r") as json_f:
+        with open(feature_data_file_path, "r", encoding='utf-8') as json_f:
             json_obj: list = json.load(json_f)
             for testcase_dict in json_obj:
                 if testcase_dict.__len__() == 1:

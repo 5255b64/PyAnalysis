@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 “凝聚层次”聚类削减方法 与
 “随机采样”削减方法的比较
@@ -13,11 +14,15 @@ from src.cluster import cluster_hierarchical, cluster_random, cluster_hierarchic
 import matplotlib.pyplot as plt
 
 
-def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list = CLUSTER_NUM_SAMPLE_LIST_1000,
+def run(input_file_addr: str, output_file_addr: str,cluster_function,
+        cluster_sample_list: list = CLUSTER_NUM_SAMPLE_LIST_1000,
         random_times: int = RANDOM_TIMES, f_measure_beta: float = F_MEASURE_BETA, is_draw_plot: bool = False,
         log_label: str = ""):
     """
 
+    :param cluster_function:    采用何种聚类削减方法
+    :param f_measure_beta:
+    :param log_label:
     :param input_file_addr:     输出的特征文件
     :param output_file_addr:    对比结果的输出文件
     :param cluster_sample_list: 聚类数量的采样列表
@@ -43,10 +48,11 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
     # 采用何种聚类削减方法
     # cluster_function = reducer_ge
     # cluster_function = cluster_random
-    cluster_function = cluster_hierarchical
+    # cluster_function = cluster_hierarchical
     # cluster_function = cluster_hierarchical_pca
     # cluster_function = cluster_hierarchical_ver2
 
+    # 必要变量初始化
     reduced_testsuite_exp = []
     tc_coverage_list = []
     coverage_list = [0] * len(feature_lists[0])
@@ -55,8 +61,18 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
         print(log_label + ": " + str(cluster_num) + "/" + str(len(cluster_sample_list)))
         # 凝聚层次聚类削减方法
         # 注意 此处的coverage_list是黑盒特征的覆盖率情况
-        reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num)
-        # [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(feature_lists, cluster_num,X_selected=reduced_testsuite_exp,coverage_list=coverage_list,tc_coverage_list=tc_coverage_list)
+        # GE 方法
+        if cluster_function is reducer_ge:
+            [reduced_testsuite_exp, coverage_list, tc_coverage_list] = cluster_function.run(
+                feature_lists, cluster_num,
+                X_selected=reduced_testsuite_exp,
+                coverage_list=coverage_list,
+                tc_coverage_list=tc_coverage_list
+            )
+        elif cluster_function is cluster_hierarchical:
+            reduced_testsuite_exp = cluster_function.run(feature_lists, cluster_num)
+        else:
+            print("cluster_function类型错误", file=sys.stderr)
         # print("reduced_testsuite_exp:", end="")
         # print(reduced_testsuite_exp)
         # 构建削减后的测试集
@@ -120,7 +136,7 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 
     # 输出数据
     headers = ["测试用例数"] + cluster_sample_list
-    with open(output_file_addr, 'w') as f:
+    with open(output_file_addr, 'w', encoding='utf-8') as f:
         f_csv = csv.writer(f)
         f_csv.writerow(headers)
         f_csv.writerows([
@@ -135,6 +151,12 @@ def run(input_file_addr: str, output_file_addr: str, cluster_sample_list: list =
 
 if __name__ == "__main__":
     f_measure_beta = 2
+    # 采用何种聚类削减方法
+    cluster_function = reducer_ge
+    # cluster_function = cluster_random
+    # cluster_function = cluster_hierarchical
+    # cluster_function = cluster_hierarchical_pca
+    # cluster_function = cluster_hierarchical_ver2
 
     arg = int(sys.argv[1])
     if arg is 1:
@@ -143,55 +165,84 @@ if __name__ == "__main__":
         output_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
-            log_label="FxclDealLog")
+            log_label="FxclDealLog", cluster_function=cluster_function)
     elif arg is 2:
         feature_data_file_addr = "..\\..\\resource\\feature_FxDealLogParser_1000.json"
         output_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
-            log_label="FxDealLog")
+            log_label="FxDealLog", cluster_function=cluster_function)
     elif arg is 3:
-        # Bcbip实验部分 123分开
+        # Bcbip实验部分 1 凝聚层次聚类
+        cluster_function = cluster_hierarchical
         feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_1000.json"
         output_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
-            log_label="Bcbip_type1")
+            log_label="Bcbip_type1", cluster_function=cluster_function)
     elif arg is 4:
+        # Bcbip实验部分 2 凝聚层次聚类
+        cluster_function = cluster_hierarchical
         feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_1000.json"
         output_file_addr = "..\\..\\resource\\BcbipType2_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
-            log_label="Bcbip_type2")
+            log_label="Bcbip_type2", cluster_function=cluster_function)
     elif arg is 5:
+        # Bcbip实验部分 3 凝聚层次聚类
+        cluster_function = cluster_hierarchical
         feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_1000.json"
         output_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
-            log_label="Bcbip_type3")
+            log_label="Bcbip_type3", cluster_function=cluster_function)
     elif arg is 6:
+        # Bcbip实验部分 1 GE算法
+        cluster_function = reducer_ge
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type1", cluster_function=cluster_function)
+    elif arg is 7:
+        # Bcbip实验部分 2 GE算法
+        cluster_function = reducer_ge
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType2_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type2", cluster_function=cluster_function)
+    elif arg is 8:
+        # Bcbip实验部分 3 GE算法
+        cluster_function = reducer_ge
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_1000.json"
+        output_file_addr = "..\\..\\resource\\BcbipType3_1000_all.csv"
+        run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
+            f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_1000,
+            log_label="Bcbip_type3", cluster_function=cluster_function)
+    elif arg is 9:
         # Bcbip实验部分 123分开
         feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type_all_1000.json"
         output_file_addr = "..\\..\\resource\\BcbipType_all_1000_all.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
             f_measure_beta=f_measure_beta, is_draw_plot=False, cluster_sample_list=CLUSTER_NUM_SAMPLE_LIST_3000,
-            log_label="Bcbip_type_all")
-    elif arg is 7:
-        # Bcbip 人工测试用例 1
-        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannaul.json"
-        output_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannaul.csv"
+            log_label="Bcbip_type_all", cluster_function=cluster_function)
+    elif arg is 10:
+        # Bcbip 人工测试用例
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannual.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type1_mannual.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,10)),
-            log_label="Bcbip_type_all")
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1, 10)),
+            log_label="Bcbip_type_all", cluster_function=cluster_function)
         # Bcbip 人工测试用例 2
-        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannaul.json"
-        output_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannaul.csv"
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannual.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type2_mannual.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,22)),
-            log_label="Bcbip_type_all")
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1, 22)),
+            log_label="Bcbip_type_all", cluster_function=cluster_function)
         # Bcbip 人工测试用例 3
-        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannaul.json"
-        output_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannaul.csv"
+        feature_data_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannual.json"
+        output_file_addr = "..\\..\\resource\\feature_bcbip_type3_mannual.csv"
         run(input_file_addr=feature_data_file_addr, output_file_addr=output_file_addr,
-            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1,17)),
-            log_label="Bcbip_type_all")
+            f_measure_beta=f_measure_beta, is_draw_plot=True, cluster_sample_list=list(range(1, 17)),
+            log_label="Bcbip_type_all", cluster_function=cluster_function)

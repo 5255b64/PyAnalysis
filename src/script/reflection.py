@@ -2,8 +2,8 @@ import csv
 from decimal import Decimal
 
 def run(input_csv_file_addr: str, output_csv_file_addr: str):
-    with open(input_csv_file_addr, 'r') as f_in:
-        with open(output_csv_file_addr, 'w') as f_out:
+    with open(input_csv_file_addr, 'r', encoding='utf-8') as f_in:
+        with open(output_csv_file_addr, 'w', encoding='utf-8') as f_out:
             f_out_csv = csv.writer(f_out)
             f_in_csv = csv.reader(f_in)
             headers = next(f_in_csv)
@@ -35,15 +35,15 @@ def run(input_csv_file_addr: str, output_csv_file_addr: str):
 
 
 if __name__ == "__main__":
-    input_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
-    output_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all_reflection.csv"
-    run(input_csv_file_addr=input_csv_file_addr,
-        output_csv_file_addr=output_csv_file_addr)
-
-    input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
-    output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all_reflection.csv"
-    run(input_csv_file_addr=input_csv_file_addr,
-        output_csv_file_addr=output_csv_file_addr)
+    # input_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all.csv"
+    # output_csv_file_addr = "..\\..\\resource\\FxDealLogParser_1000_all_reflection.csv"
+    # run(input_csv_file_addr=input_csv_file_addr,
+    #     output_csv_file_addr=output_csv_file_addr)
+    #
+    # input_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all.csv"
+    # output_csv_file_addr = "..\\..\\resource\\FxclDealLogParser_1000_all_reflection.csv"
+    # run(input_csv_file_addr=input_csv_file_addr,
+    #     output_csv_file_addr=output_csv_file_addr)
 
     input_csv_file_addr = "..\\..\\resource\\BcbipType1_1000_all.csv"
     output_csv_file_addr = "..\\..\\resource\\BcbipType1_1000_all_reflection.csv"
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     run(input_csv_file_addr=input_csv_file_addr,
         output_csv_file_addr=output_csv_file_addr)
 
-    input_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all.csv"
-    output_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all_reflection.csv"
-    run(input_csv_file_addr=input_csv_file_addr,
-        output_csv_file_addr=output_csv_file_addr)
+    # input_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all.csv"
+    # output_csv_file_addr = "..\\..\\resource\\BcbipType_all_1000_all_reflection.csv"
+    # run(input_csv_file_addr=input_csv_file_addr,
+    #     output_csv_file_addr=output_csv_file_addr)
